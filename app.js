@@ -72,11 +72,31 @@ let recetario = [tartaDeChoclo];
 btnRecetas.addEventListener("click", function() {
     // Lógica para mostrar la sección de recetas
     contenido.innerHTML = "<h2>Recetas</h2><p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>";
+    const recetasDiv = document.createElement("div");
+    recetasDiv.innerHTML = `<ul></ul>`;
+    contenido.appendChild(recetasDiv);
+    const recetasList = recetasDiv.querySelector("ul");
     for (let i = 0; i < recetario.length; i++) {
         const receta = recetario[i];
-        const recetasDiv = document.createElement("div");
-        recetasDiv.innerHTML = `<ul><li>${receta.nombre}</li></ul>`;
-        contenido.appendChild(recetasDiv);
+        const recetaItem = document.createElement("li");
+        recetaItem.textContent = receta.nombre;
+        recetaItem.dataset.indice = i; // Guardar el índice de la receta en un atributo data
+            recetaItem.addEventListener("click", function() {
+            const indice = this.dataset.indice; // Obtener el índice de la receta
+            const recetaSeleccionada = recetario[indice];
+            contenido.innerHTML = 
+            `<h2>${recetaSeleccionada.nombre}</h2>
+            <h3>Ingredientes:</h3>
+            <ul>${recetaSeleccionada.ingredientes.map(ingrediente => 
+                { if (ingrediente.cantidad && ingrediente.unidad) {return `<li>${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}</li>`;
+    } else {
+        return `<li>${ingrediente.nombre} a gusto</li>`;
+    }
+}).join("")}</ul>
+            <h3>Instrucciones:</h3>
+            <p>${recetaSeleccionada.instrucciones}</p>`;
+        });
+        recetasList.appendChild(recetaItem);
     }
 });
 btnInventario.addEventListener("click", function() {
