@@ -111,17 +111,30 @@ btnRecetas.addEventListener("click", function() {
             `<h2>${recetaSeleccionada.nombre}</h2>
             <h3>Ingredientes:</h3>
             <ul>${recetaSeleccionada.ingredientes.map(
-                ingrediente => { 
-                if (ingrediente.cantidad && ingrediente.unidad)
-                    {return `<li>${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}</li>`;}
-                else
-                    {return `<li>${ingrediente.nombre} a gusto</li>`;}}
+                ingrediente => {
+                    ingredienteDisponible = inventario.find(item => item.nombre.toLowerCase() === ingrediente.nombre.toLowerCase());
+                    if (ingrediente.cantidad === null) {
+                        if (ingredienteDisponible) {
+                            return `<li>${ingrediente.nombre} a gusto</li>`;
+                        } else {
+                            return `<li style="color: red;">${ingrediente.nombre} a gusto (no disponible)</li>`;
+                        }
+                    } else if (ingredienteDisponible) {
+                        if (ingredienteDisponible.cantidadDisponible >= ingrediente.cantidad) {
+                            return `<li>${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}</li>`;
+                        } else {
+                            return `<li style="color: orange;">${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre} (insuficiente)</li>`;
+                        }
+                    } else {
+                        return `<li style="color: red;">${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre} (no disponible)</li>`;
+                    }
+                }
             ).join("")}</ul>
             <h3>Instrucciones:</h3>
             <p>${recetaSeleccionada.instrucciones}</p>`;
         });
         recetasList.appendChild(recetaItem);
-    }
+}
 });
 
 btnInventario.addEventListener("click", function() {
