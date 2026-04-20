@@ -157,3 +157,14 @@ btnCalendario.addEventListener("click", function() {
     // Lógica para mostrar la sección de calendario
     contenido.innerHTML = "<h2>Calendario</h2><p>Aquí puedes planificar tus comidas semanalmente.</p>";
 });
+
+function guardarInventario() {
+    localStorage.setItem("inventario", JSON.stringify(inventario));
+}
+
+function cargarInventario() {
+    const datos = localStorage.getItem("inventario");
+    if (datos) {
+        inventario = JSON.parse(datos);
+    }
+}
