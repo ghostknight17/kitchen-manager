@@ -92,6 +92,8 @@ unidad : "u"
 },
 ];
 
+cargarInventario();
+
 btnRecetas.addEventListener("click", function() {
     // Lógica para mostrar la sección de recetas
     contenido.innerHTML = "<h2>Recetas</h2><p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>";
@@ -138,19 +140,7 @@ btnRecetas.addEventListener("click", function() {
 });
 
 btnInventario.addEventListener("click", function() {
-    // Lógica para mostrar la sección de inventario
-    contenido.innerHTML = "<h2>Inventario</h2><p>Aquí puedes gestionar el inventario de ingredientes.</p>";
-    const inventarioDiv = document.createElement("div");
-    inventarioDiv.innerHTML = `<ul></ul>`;
-    contenido.appendChild(inventarioDiv);
-    const inventarioList = inventarioDiv.querySelector("ul");
-    for (let i = 0; i < inventario.length; i++) {
-        const item = inventario[i];
-        const listItem = document.createElement("li");
-        listItem.textContent = `${item.cantidadDisponible} ${item.unidad} de ${item.nombre}`;
-        inventarioList.appendChild(listItem);
-    }
-
+    renderInventario();
 });
 
 btnCalendario.addEventListener("click", function() {
@@ -167,4 +157,38 @@ function cargarInventario() {
     if (datos) {
         inventario = JSON.parse(datos);
     }
+}
+
+function renderInventario() {
+    contenido.innerHTML = "<h2>Inventario</h2><p>Aquí puedes gestionar el inventario de ingredientes.</p>";
+    const inventarioDiv = document.createElement("div");
+    inventarioDiv.innerHTML = `<ul></ul>`;
+    contenido.appendChild(inventarioDiv);
+    const inventarioList = inventarioDiv.querySelector("ul");
+    for (let i = 0; i < inventario.length; i++) {
+        const item = inventario[i];
+        const listItem = document.createElement("li");
+        listItem.textContent = `${item.cantidadDisponible} ${item.unidad} de ${item.nombre}`;
+        inventarioList.appendChild(listItem);
+    }
+    const inventarioForm = document.createElement("form");
+    inventarioForm.id = "inventario-form";
+    inventarioForm.innerHTML = `
+        <h3>Agregar/Actualizar Ingrediente</h3>
+        <input type="text" id="nombre-ingrediente" placeholder="Nombre del ingrediente" required>
+        <input type="number" id="cantidad-ingrediente" placeholder="Cantidad disponible" required>
+        <input type="text" id="unidad-ingrediente" placeholder="Unidad (e.g., u, g, ml)" required>
+        <button type="submit">Guardar</button>
+    `;
+    contenido.appendChild(inventarioForm);
+    inventarioForm.addEventListener("submit", function(event) {
+        const nombre = document.getElementById("nombre-ingrediente").value;
+        const cantidadDisponible = document.getElementById("cantidad-ingrediente").value;
+        const unidad = document.getElementById("unidad-ingrediente").value;
+        const ingrediente = {nombre, cantidadDisponible, unidad};
+        event.preventDefault();
+        inventario.push(ingrediente);
+        guardarInventario();
+        renderInventario();
+    });
 }
