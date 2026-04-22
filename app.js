@@ -168,8 +168,19 @@ function renderInventario() {
     for (let i = 0; i < inventario.length; i++) {
         const item = inventario[i];
         const listItem = document.createElement("li");
+        const itemBtn = document.createElement("button");
         listItem.textContent = `${item.cantidadDisponible} ${item.unidad} de ${item.nombre}`;
+        itemBtn.textContent = "X";
+        itemBtn.dataset.indice = i; // Guardar el índice del ingrediente
+        itemBtn.addEventListener("click", function() {
+            const indice = this.dataset.indice;
+            inventario.splice(indice, 1);
+            guardarInventario();
+            renderInventario();
+        }
+    ) 
         inventarioList.appendChild(listItem);
+        listItem.appendChild(itemBtn);
     }
     const inventarioForm = document.createElement("form");
     inventarioForm.id = "inventario-form";
