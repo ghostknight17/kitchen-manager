@@ -92,7 +92,60 @@ unidad : "u"
 },
 ];
 
+let semana = [
+    {
+        nombre : "Lunes",
+        desayuno : tartaDeChoclo,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    },
+    {
+        nombre : "Martes",
+        desayuno : null,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    },
+    {
+        nombre : "Miercoles",
+        desayuno : null,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    },
+    {
+        nombre : "Jueves",
+        desayuno : null,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    },
+    {
+        nombre : "Viernes",
+        desayuno : null,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    },
+    {
+        nombre : "Sabado",
+        desayuno : null,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    },
+    {
+        nombre : "Domingo",
+        desayuno : null,
+        almuerzo : null,
+        merienda : null,
+        cena : null
+    }
+]
+
 cargarInventario();
+cargarSemana();
 
 btnRecetas.addEventListener("click", function() {
     // Lógica para mostrar la sección de recetas
@@ -144,8 +197,7 @@ btnInventario.addEventListener("click", function() {
 });
 
 btnCalendario.addEventListener("click", function() {
-    // Lógica para mostrar la sección de calendario
-    contenido.innerHTML = "<h2>Calendario</h2><p>Aquí puedes planificar tus comidas semanalmente.</p>";
+    renderCalendario();
 });
 
 function guardarInventario() {
@@ -156,6 +208,17 @@ function cargarInventario() {
     const datos = localStorage.getItem("inventario");
     if (datos) {
         inventario = JSON.parse(datos);
+    }
+}
+
+function guardarSemana() {
+    localStorage.setItem("semana", JSON.stringify(semana));
+}
+
+function cargarSemana() {
+    const datos = localStorage.getItem("semana");
+    if (datos) {
+        semana = JSON.parse(datos);
     }
 }
 
@@ -221,4 +284,18 @@ function renderInventario() {
         renderInventario();
         indiceEdicion = null;
     });
+}
+
+function renderCalendario() {
+    contenido.innerHTML = "<h2>Calendario</h2><p>Aquí puedes planificar tus comidas semanalmente.</p>";
+    const calendarioDiv = document.createElement("div");
+    calendarioDiv.innerHTML = `<ul></ul>`;
+    contenido.appendChild(calendarioDiv);
+    const calendarioList = calendarioDiv.querySelector("ul");
+    for (let i = 0; i < semana.length; i++) {
+        const dia = semana[i];
+        const listItem = document.createElement("li");
+        listItem.textContent = `${dia.nombre}: Desayuno: ${dia.desayuno === null ? "Sin asignar" : dia.desayuno.nombre}, Almuerzo: ${dia.almuerzo === null ? "Sin asignar" : dia.almuerzo.nombre}, Merienda: ${dia.merienda === null ? "Sin asignar" : dia.merienda.nombre}, Cena: ${dia.cena === null ? "Sin asignar" : dia.cena.nombre}`;
+        calendarioList.appendChild(listItem);
+    }
 }
