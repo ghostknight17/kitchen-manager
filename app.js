@@ -165,20 +165,31 @@ function renderInventario() {
     inventarioDiv.innerHTML = `<ul></ul>`;
     contenido.appendChild(inventarioDiv);
     const inventarioList = inventarioDiv.querySelector("ul");
+    let indiceEdicion = null;
     for (let i = 0; i < inventario.length; i++) {
         const item = inventario[i];
         const listItem = document.createElement("li");
         const itemBtn = document.createElement("button");
         listItem.textContent = `${item.cantidadDisponible} ${item.unidad} de ${item.nombre}`;
         itemBtn.textContent = "X";
+        listItem.dataset.indice = i;
         itemBtn.dataset.indice = i; // Guardar el índice del ingrediente
+        listItem.addEventListener("click", function() {
+            const indice = this.dataset.indice;
+            const ingredienteSeleccionado = inventario[indice];
+            document.getElementById("nombre-ingrediente").value = ingredienteSeleccionado.nombre;
+            document.getElementById("cantidad-ingrediente").value = ingredienteSeleccionado.cantidadDisponible;
+            document.getElementById("unidad-ingrediente").value = ingredienteSeleccionado.unidad;
+            indiceEdicion = this.dataset.indice;
+            console.log("indiceEdicion asignado:", indiceEdicion, typeof indiceEdicion);
+        })
         itemBtn.addEventListener("click", function() {
             const indice = this.dataset.indice;
             inventario.splice(indice, 1);
             guardarInventario();
             renderInventario();
-        }
-    ) 
+            }
+        )
         inventarioList.appendChild(listItem);
         listItem.appendChild(itemBtn);
     }
@@ -198,8 +209,16 @@ function renderInventario() {
         const unidad = document.getElementById("unidad-ingrediente").value;
         const ingrediente = {nombre, cantidadDisponible, unidad};
         event.preventDefault();
-        inventario.push(ingrediente);
+        console.log("en submit, indiceEdicion:", indiceEdicion, typeof indiceEdicion);
+        if (indiceEdicion !== null) {
+            inventario[Number(indiceEdicion)].nombre = nombre;
+            inventario[Number(indiceEdicion)].cantidadDisponible = cantidadDisponible;
+            inventario[Number(indiceEdicion)].unidad = unidad;
+        } else {
+            inventario.push(ingrediente);
+        }
         guardarInventario();
         renderInventario();
+        indiceEdicion = null;
     });
 }
