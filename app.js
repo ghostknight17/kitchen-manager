@@ -287,15 +287,63 @@ function renderInventario() {
 }
 
 function renderCalendario() {
+    console.log("renderCalendario ejecutado");
     contenido.innerHTML = "<h2>Calendario</h2><p>Aquí puedes planificar tus comidas semanalmente.</p>";
     const calendarioDiv = document.createElement("div");
     calendarioDiv.innerHTML = `<ul></ul>`;
     contenido.appendChild(calendarioDiv);
     const calendarioList = calendarioDiv.querySelector("ul");
+    console.log("semana:", semana);
     for (let i = 0; i < semana.length; i++) {
         const dia = semana[i];
         const listItem = document.createElement("li");
-        listItem.textContent = `${dia.nombre}: Desayuno: ${dia.desayuno === null ? "Sin asignar" : dia.desayuno.nombre}, Almuerzo: ${dia.almuerzo === null ? "Sin asignar" : dia.almuerzo.nombre}, Merienda: ${dia.merienda === null ? "Sin asignar" : dia.merienda.nombre}, Cena: ${dia.cena === null ? "Sin asignar" : dia.cena.nombre}`;
+        console.log("iteración:", i, dia);
+        listItem.textContent = 
+        `${dia.nombre}: 
+        Desayuno: ${dia.desayuno === null ? "Sin asignar" : dia.desayuno.nombre}, 
+        Almuerzo: ${dia.almuerzo === null ? "Sin asignar" : dia.almuerzo.nombre}, 
+        Merienda: ${dia.merienda === null ? "Sin asignar" : dia.merienda.nombre}, 
+        Cena: ${dia.cena === null ? "Sin asignar" : dia.cena.nombre}`;
+        listItem.dataset.indice = i;
+        listItem.addEventListener("click", function() {
+            const indice = this.dataset.indice;
+            const diaSeleccionado = semana[indice];
+            const modal = document.getElementById("agregar-comida");
+            modal.innerHTML = `
+                <h3>Agregar Comida</h3>
+                <select id="tipo-comida">
+                    <option value="desayuno">Desayuno</option>
+                    <option value="almuerzo">Almuerzo</option>
+                    <option value="merienda">Merienda</option>
+                    <option value="cena">Cena</option>
+                </select>
+                <button id="agregar-btn">Agregar</button>
+            `;
+            const tipoComidaSelect = modal.querySelector("#tipo-comida");
+            const agregarBtn = document.getElementById("agregar-btn");
+            agregarBtn.addEventListener("click", function() {
+                const comidaSeleccionada = tipoComidaSelect.value;
+                modal.innerHTML = `
+                    <h3>Elegir receta</h3>
+                    <ul></ul>
+                `;
+                const recetasList = modal.querySelector("ul");
+                recetasList.innerHTML = "";
+                recetario.forEach(receta => {
+                    const recetaItem = document.createElement("li");
+                    recetaItem.textContent = receta.nombre;
+                    recetaItem.addEventListener("click", function() {
+                        const tipoComida = tipoComidaSelect.value;
+                        semana[indice][tipoComida] = receta;
+                        guardarSemana();
+                        renderCalendario();
+                        modal.close();
+                    });
+                    recetasList.appendChild(recetaItem);
+                });
+            });
+            modal.showModal();
+        });
         calendarioList.appendChild(listItem);
-    }
-}
+    };
+};
