@@ -91,7 +91,6 @@ cantidadDisponible : 2,
 unidad : "u"
 },
 ];
-
 let semana = [
     {
         nombre : "Lunes",
@@ -144,23 +143,73 @@ let semana = [
     }
 ]
 
+cargarRecetario();
 cargarInventario();
 cargarSemana();
 
 btnRecetas.addEventListener("click", function() {
-    // Lógica para mostrar la sección de recetas
+    renderRecetario();
+});
+
+btnInventario.addEventListener("click", function() {
+    renderInventario();
+});
+
+btnCalendario.addEventListener("click", function() {
+    renderCalendario();
+});
+
+function guardarRecetario() {
+    localStorage.setItem("recetario", JSON.stringify(recetario));
+}
+
+function cargarRecetario() {
+    const datos = localStorage.getItem("recetario");
+    if (datos) {
+        recetario = JSON.parse(datos);
+    }
+}
+
+function guardarInventario() {
+    localStorage.setItem("inventario", JSON.stringify(inventario));
+}
+
+function cargarInventario() {
+    const datos = localStorage.getItem("inventario");
+    if (datos) {
+        inventario = JSON.parse(datos);
+    }
+}
+
+function guardarSemana() {
+    localStorage.setItem("semana", JSON.stringify(semana));
+}
+
+function cargarSemana() {
+    const datos = localStorage.getItem("semana");
+    if (datos) {
+        semana = JSON.parse(datos);
+    }
+}
+
+function renderRecetario() {
     contenido.innerHTML = "<h2>Recetas</h2><p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>";
     const recetasDiv = document.createElement("div");
     recetasDiv.innerHTML = `<ul></ul>`;
     contenido.appendChild(recetasDiv);
     const recetasList = recetasDiv.querySelector("ul");
+    let ingredientesReceta = [];
+    
     for (let i = 0; i < recetario.length; i++) {
         const receta = recetario[i];
         const recetaItem = document.createElement("li");
+        const recetaBtn = document.createElement("button");
         recetaItem.textContent = receta.nombre;
-        recetaItem.dataset.indice = i; // Guardar el índice de la receta en un atributo data
+        recetaBtn.textContent = "X";
+        recetaItem.dataset.indice = i;
+        recetaBtn.dataset.indice = i;
         recetaItem.addEventListener("click", function() {
-            const indice = this.dataset.indice; // Obtener el índice de la receta
+            const indice = this.dataset.indice;
             const recetaSeleccionada = recetario[indice];
             contenido.innerHTML = 
             `<h2>${recetaSeleccionada.nombre}</h2>
@@ -188,38 +237,55 @@ btnRecetas.addEventListener("click", function() {
             <h3>Instrucciones:</h3>
             <p>${recetaSeleccionada.instrucciones}</p>`;
         });
+        recetaBtn.addEventListener("click", function() {
+            const indice = this.dataset.indice;
+            recetario.splice(indice, 1);
+            guardarRecetario();
+            renderRecetario();
+        });
         recetasList.appendChild(recetaItem);
-}
-});
-
-btnInventario.addEventListener("click", function() {
-    renderInventario();
-});
-
-btnCalendario.addEventListener("click", function() {
-    renderCalendario();
-});
-
-function guardarInventario() {
-    localStorage.setItem("inventario", JSON.stringify(inventario));
-}
-
-function cargarInventario() {
-    const datos = localStorage.getItem("inventario");
-    if (datos) {
-        inventario = JSON.parse(datos);
+        recetaItem.appendChild(recetaBtn);
     }
-}
-
-function guardarSemana() {
-    localStorage.setItem("semana", JSON.stringify(semana));
-}
-
-function cargarSemana() {
-    const datos = localStorage.getItem("semana");
-    if (datos) {
-        semana = JSON.parse(datos);
-    }
+    const recetarioForm = document.createElement("form");
+    recetarioForm.innerHTML = `
+        <label for="nombre">Nombre de la receta:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <label for="ingredientes" id="ingredientes-label">Ingredientes:</label>
+        <input type="text" id="nombre-ingrediente" placeholder="Nombre del ingrediente">
+        <input type="number" id="cantidad-ingrediente" placeholder="Cantidad">
+        <input type="text" id="unidad-ingrediente" placeholder="Unidad (e.g., u, g, ml)">
+        <button type="button" id="agregar-ingrediente">Guardar</button>
+        <label for="instrucciones">Instrucciones:</label>
+        <textarea id="instrucciones" name="instrucciones" required></textarea>
+        <button type="submit">Guardar</button>
+    `;
+    contenido.appendChild(recetarioForm);
+    const ingredientesListTemp = document.createElement("ul");
+    document.getElementById("ingredientes-label").appendChild(ingredientesListTemp);
+    const agregarIngredienteBtn = document.getElementById("agregar-ingrediente");
+    agregarIngredienteBtn.addEventListener("click", function() {
+        const nombre = document.getElementById("nombre-ingrediente").value;
+        const cantidad = document.getElementById("cantidad-ingrediente").value;
+        const unidad = document.getElementById("unidad-ingrediente").value;
+        const nuevoIngrediente = { nombre, cantidad, unidad };
+        ingredientesReceta.push(nuevoIngrediente);
+        document.getElementById("nombre-ingrediente").value = "";
+        document.getElementById("cantidad-ingrediente").value = "";
+        document.getElementById("unidad-ingrediente").value = "";
+        ingredientesListTemp.innerHTML = ingredientesReceta.map(ingrediente => `<li>${ingrediente.nombre} (${ingrediente.cantidad} ${ingrediente.unidad})</li>`).join("");
+    })
+    recetarioForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const nombre = document.getElementById("nombre").value;
+        const ingredientes = ingredientesReceta;
+        const instrucciones = document.getElementById("instrucciones").value;
+        const nuevaReceta = { nombre, ingredientes, instrucciones };
+        recetario.push(nuevaReceta);
+        guardarRecetario();
+        renderRecetario();
+        recetarioForm.reset();
+        ingredientesReceta = [];
+    })
 }
 
 function renderInventario() {
@@ -236,7 +302,7 @@ function renderInventario() {
         listItem.textContent = `${item.cantidadDisponible} ${item.unidad} de ${item.nombre}`;
         itemBtn.textContent = "X";
         listItem.dataset.indice = i;
-        itemBtn.dataset.indice = i; // Guardar el índice del ingrediente
+        itemBtn.dataset.indice = i;
         listItem.addEventListener("click", function() {
             const indice = this.dataset.indice;
             const ingredienteSeleccionado = inventario[indice];
@@ -244,7 +310,6 @@ function renderInventario() {
             document.getElementById("cantidad-ingrediente").value = ingredienteSeleccionado.cantidadDisponible;
             document.getElementById("unidad-ingrediente").value = ingredienteSeleccionado.unidad;
             indiceEdicion = this.dataset.indice;
-            console.log("indiceEdicion asignado:", indiceEdicion, typeof indiceEdicion);
         })
         itemBtn.addEventListener("click", function() {
             const indice = this.dataset.indice;
@@ -267,12 +332,11 @@ function renderInventario() {
     `;
     contenido.appendChild(inventarioForm);
     inventarioForm.addEventListener("submit", function(event) {
+        event.preventDefault();
         const nombre = document.getElementById("nombre-ingrediente").value;
         const cantidadDisponible = document.getElementById("cantidad-ingrediente").value;
         const unidad = document.getElementById("unidad-ingrediente").value;
         const ingrediente = {nombre, cantidadDisponible, unidad};
-        event.preventDefault();
-        console.log("en submit, indiceEdicion:", indiceEdicion, typeof indiceEdicion);
         if (indiceEdicion !== null) {
             inventario[Number(indiceEdicion)].nombre = nombre;
             inventario[Number(indiceEdicion)].cantidadDisponible = cantidadDisponible;
