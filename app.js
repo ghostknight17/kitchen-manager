@@ -265,14 +265,24 @@ function renderRecetario() {
     const agregarIngredienteBtn = document.getElementById("agregar-ingrediente");
     agregarIngredienteBtn.addEventListener("click", function() {
         const nombre = document.getElementById("nombre-ingrediente").value;
-        const cantidad = document.getElementById("cantidad-ingrediente").value;
-        const unidad = document.getElementById("unidad-ingrediente").value;
+        let cantidad = document.getElementById("cantidad-ingrediente").value;
+        let unidad = document.getElementById("unidad-ingrediente").value;
+        if (cantidad === '' && unidad === '') {
+            cantidad = null;
+            unidad = null;
+        }
         const nuevoIngrediente = { nombre, cantidad, unidad };
         ingredientesReceta.push(nuevoIngrediente);
         document.getElementById("nombre-ingrediente").value = "";
         document.getElementById("cantidad-ingrediente").value = "";
         document.getElementById("unidad-ingrediente").value = "";
-        ingredientesListTemp.innerHTML = ingredientesReceta.map(ingrediente => `<li>${ingrediente.nombre} (${ingrediente.cantidad} ${ingrediente.unidad})</li>`).join("");
+        ingredientesListTemp.innerHTML = ingredientesReceta.map(ingrediente => {
+            if (ingrediente.cantidad === null) {
+                return `<li>${ingrediente.nombre} a gusto</li>`;
+            } else {
+                return `<li>${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}</li>`;
+            }
+        }).join("");
     })
     recetarioForm.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -299,7 +309,8 @@ function renderInventario() {
         const item = inventario[i];
         const listItem = document.createElement("li");
         const itemBtn = document.createElement("button");
-        listItem.textContent = `${item.cantidadDisponible} ${item.unidad} de ${item.nombre}`;
+        listItem.innerHTML = 
+        item.cantidadDisponible === null ? `<span>${item.nombre}</span>` : `<span>${item.cantidadDisponible} ${item.unidad} de ${item.nombre}</span>`;
         itemBtn.textContent = "X";
         listItem.dataset.indice = i;
         itemBtn.dataset.indice = i;
@@ -326,16 +337,20 @@ function renderInventario() {
     inventarioForm.innerHTML = `
         <h3>Agregar/Actualizar Ingrediente</h3>
         <input type="text" id="nombre-ingrediente" placeholder="Nombre del ingrediente" required>
-        <input type="number" id="cantidad-ingrediente" placeholder="Cantidad disponible" required>
-        <input type="text" id="unidad-ingrediente" placeholder="Unidad (e.g., u, g, ml)" required>
+        <input type="number" id="cantidad-ingrediente" placeholder="Cantidad disponible">
+        <input type="text" id="unidad-ingrediente" placeholder="Unidad (e.g., u, g, ml)">
         <button type="submit">Guardar</button>
     `;
     contenido.appendChild(inventarioForm);
     inventarioForm.addEventListener("submit", function(event) {
         event.preventDefault();
         const nombre = document.getElementById("nombre-ingrediente").value;
-        const cantidadDisponible = document.getElementById("cantidad-ingrediente").value;
-        const unidad = document.getElementById("unidad-ingrediente").value;
+        let cantidadDisponible = document.getElementById("cantidad-ingrediente").value;
+        let unidad = document.getElementById("unidad-ingrediente").value;
+        if (cantidadDisponible === '' && unidad === '') {
+            cantidadDisponible = null;
+            unidad = null;
+        }
         const ingrediente = {nombre, cantidadDisponible, unidad};
         if (indiceEdicion !== null) {
             inventario[Number(indiceEdicion)].nombre = nombre;
@@ -351,17 +366,14 @@ function renderInventario() {
 }
 
 function renderCalendario() {
-    console.log("renderCalendario ejecutado");
     contenido.innerHTML = "<h2>Calendario</h2><p>Aquí puedes planificar tus comidas semanalmente.</p>";
     const calendarioDiv = document.createElement("div");
     calendarioDiv.innerHTML = `<ul></ul>`;
     contenido.appendChild(calendarioDiv);
     const calendarioList = calendarioDiv.querySelector("ul");
-    console.log("semana:", semana);
     for (let i = 0; i < semana.length; i++) {
         const dia = semana[i];
         const listItem = document.createElement("li");
-        console.log("iteración:", i, dia);
         listItem.textContent = 
         `${dia.nombre}: 
         Desayuno: ${dia.desayuno === null ? "Sin asignar" : dia.desayuno.nombre}, 
