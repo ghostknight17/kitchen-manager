@@ -1,0 +1,28 @@
+{
+  "name": "kitchen-manager",
+  "version": "1.0.0",
+  "description": "Personal cooking manager — recipe book, pantry inventory and weekly meal planner",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghostknight17/kitchen-manager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ghostknight17/kitchen-manager/issues"
+  },
+  "homepage": "https://github.com/ghostknight17/kitchen-manager#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.12",
+    "tailwindcss": "^3.4.19",
+    "vite": "^8.0.10"
+  }
+}

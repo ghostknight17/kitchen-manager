@@ -1,3 +1,5 @@
+import './style.css'
+
 const contenido = document.getElementById("contenido");
 const btnRecetas = document.getElementById("btn-recetas");
 const btnInventario = document.getElementById("btn-inventario");
