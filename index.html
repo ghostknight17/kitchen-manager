@@ -8,18 +8,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-gray-950 text-gray-400">
+<body class="bg-gray-950 text-gray-400 font-inter">
 
-    <header>
-        <h1>Kitchen Manager</h1>
-        <nav>
-            <button id="btn-recetas" class="btn-nav">Recetas</button>
-            <button id="btn-inventario" class="btn-nav">Inventario</button>
-            <button id="btn-calendario" class="btn-nav">Calendario</button>
+    <header class="flex justify-around items-center px-4 py-8 bg-gray-900">
+        <h1 class="text-2xl font-bold">Kitchen Manager</h1>
+        <nav class=" flex gap-4">
+            <button id="btn-recetas" class="px-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-white hover:border-slate-500 transition-colors">Recetas</button>
+            <button id="btn-inventario" class="px-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-white hover:border-slate-500 transition-colors">Inventario</button>
+            <button id="btn-calendario" class="px-1 py-2 text-slate-400 border-b-2 border-transparent hover:text-white hover:border-slate-500 transition-colors">Calendario</button>
         </nav>
+        <button id="btn-about" class="btn-nav">About</button>
     </header>
 
-    <main id="contenido">
+    <main id="contenido" class="p-6 max-w-4xl mx-auto">
         <!-- Acá se va a cargar cada sección -->
     </main>
 
