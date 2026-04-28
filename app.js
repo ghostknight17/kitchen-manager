@@ -131,6 +131,10 @@ function resaltarBtn(btn) {
     }
 }
 
+function getImg(img) {
+    return img ? img : "https://picsum.photos/600/400";
+}
+
 function renderRecetario() {
     resaltarBtn(btnRecetas);
     contenido.innerHTML = "<div class='flex justify-between items-center'><h2>Recetas</h2><button id='btnAgregarReceta' class='bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded'>Agregar Receta</button></div><p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>";
@@ -149,12 +153,11 @@ function renderRecetario() {
         const receta = recetario[i];
         const recetaCard = document.createElement("div");
         const deleteBtn = document.createElement("button");
-        recetaCard.classList.add("bg-gray-800", "rounded-lg", "p-4", "cursor-pointer", "max-w-md");
-        recetaCard.textContent = receta.nombre;
-        deleteBtn.textContent = "Eliminar";
-        recetaCard.dataset.indice = i;
+        recetaCard.classList.add("bg-gray-800", "rounded-lg", "p-4", "cursor-pointer", "max-w-md", "flex", "flex-col");
+        recetaCard.innerHTML = `<div><img src="${getImg(receta.imagen)}" alt="${receta.nombre}" class="w-full h-48 object-cover mb-4"><h3 class="text-lg pb-2">${receta.nombre}</h3><div class="flex flex-row gap-2 justify-end items-center"><button class="text-white text-xl px-2 ">⋮</button></div></div>`;
+        recetaCard.querySelector("h3").dataset.indice = i;
         deleteBtn.dataset.indice = i;
-        recetaCard.addEventListener("click", function() {
+        recetaCard.querySelector("h3").addEventListener("click", function() {
             const indice = this.dataset.indice;
             const recetaSeleccionada = recetario[indice];
             contenido.innerHTML = 
