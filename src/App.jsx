@@ -1,16 +1,38 @@
-import {useState} from 'react';
+import { useState } from 'react';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import Header from './components/Header';
+import Home from './components/Home';
+import Recetas from './components/Recetas';
+import Despensa from './components/Despensa';
+import Calendario from './components/Calendario';
 
-function App() {
-    const [vistaActual, setVistaActual] = useState('home');
+const SECCIONES = {
+  home: 'home',
+  recetas: 'recetas',
+  despensa: 'despensa',
+  calendario: 'calendario',
+};
 
-    return (
-        <div>
-            <nav>
-                <button onClick={() => setVistaActual('home')}>Home</button>
-                <button onClick={() => setVistaActual('recetas')}>Recetas</button>
-                <button onClick={() => setVistaActual('despensa')}>Despensa</button>
-                <button onClick={() => setVistaActual('calendario')}>Calendario</button>
-            </nav>
-        </div>
-    );
+export default function App() {
+  const [recetas, setRecetas] = useLocalStorage('recetas', []);
+  const [despensa, setDespensa] = useLocalStorage('despensa', []);
+  const [calendario, setCalendario] = useLocalStorage('calendario', semana());
+
+  const [seccionActiva, setSeccionActiva] = useState(SECCIONES.home);
+
+  return (
+    <div>
+      <Header
+        seccionActiva={seccionActiva}
+        onCambiarSeccion={setSeccionActiva}
+      />
+
+      <main>
+        {seccionActiva === SECCIONES.home && <Home />}
+        {seccionActiva === SECCIONES.recetas && (
+          null
+        )}
+      </main>
+    </div>
+  );
 }
