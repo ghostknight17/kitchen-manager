@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // se declara la función useLocalStorage dentro de este custom hook
-function useLocalStorage(clave, valorInicial) {
+export function useLocalStorage(clave, valorInicial) {
   const [valor, setValor] = useState(() => {
     const guardado = localStorage.getItem(clave);
     return guardado ? JSON.parse(guardado) : valorInicial;
@@ -15,5 +15,3 @@ function useLocalStorage(clave, valorInicial) {
 
   return [valor, actualizarValor];
 }
-
-export default useLocalStorage;
