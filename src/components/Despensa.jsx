@@ -14,7 +14,7 @@ export default function Despensa({ despensa, setDespensa }) {
       nombre,
       cantidadDisponible:
         cantidadDisponible === '' ? null : Number(cantidadDisponible),
-      unidad,
+      unidad: unidad === '' ? null : unidad.trim(),
     };
 
     if (indiceEdicion !== null) {

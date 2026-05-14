@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import Header from './components/Header';
 // import Home from './components/Home';
-// import Recetas from './components/Recetas';
+import Recetas from './components/Recetas';
 import Despensa from './components/Despensa';
 // import Calendario from './components/Calendario';
 
 const SECCIONES = {
   // home: 'home',
-  // recetas: 'recetas',
+  recetas: 'recetas',
   despensa: 'despensa',
   // calendario: 'calendario',
 };
@@ -66,7 +66,7 @@ let semana = [
 ];
 
 export default function App() {
-  // const [recetas, setRecetas] = useLocalStorage('recetas', []);
+  const [recetas, setRecetas] = useLocalStorage('recetas', []);
   const [despensa, setDespensa] = useLocalStorage('despensa', []);
   // const [calendario, setCalendario] = useLocalStorage('calendario', semana);
 
@@ -74,15 +74,19 @@ export default function App() {
 
   function Contenido({ seccionActiva }) {
     // if (seccionActiva === 'recetas') {
-    //   return <Recetas />;
+    //   return <Recetas recetas={recetas} setRecetas={setRecetas} />;
     // } else if (seccionActiva === 'despensa') {
-    //   return <Despensa despensa={despensa} />;
+    //   return <Despensa despensa={despensa} setDespensa={setDespensa} />;
     // } else if (seccionActiva === 'calendario') {
     //   return <Calendario />;
     // } else {
     //   return <Home />;
     // }
-    return <Despensa despensa={despensa} />;
+    if (seccionActiva === 'recetas') {
+      return <Recetas recetas={recetas} setRecetas={setRecetas} />;
+    } else if (seccionActiva === 'despensa') {
+      return <Despensa despensa={despensa} setDespensa={setDespensa} />;
+    }
   }
 
   return (
