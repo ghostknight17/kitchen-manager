@@ -6,6 +6,8 @@ export default function Recetas({ recetas, setRecetas }) {
   const [ingredientesVisible, setIngredientesVisible] = useState(false);
   const [indiceEdicion, setIndiceEdicion] = useState(null);
 
+  const [recetaSeleccionada, setRecetaSeleccionada] = useState(null);
+
   const [nombre, setNombre] = useState("");
   const [ingredientesTemp, setIngredientesTemp] = useState([]);
   const [instrucciones, setInstrucciones] = useState("");
@@ -71,128 +73,164 @@ export default function Recetas({ recetas, setRecetas }) {
     setRecetas([...recetas, receta]);
   }
 
-  return (
-    <div className="p-6 max-w-4xl mx-auto flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h2>Recetas</h2>
-        <button
-          className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded"
-          onClick={abrirFormularioNuevo}
-        >
-          Agregar Receta
-        </button>
-      </div>
-      <p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>
-      <div id="card" className="bg-gray-900 rounded-lg p-6">
-        <div id="recetas-div">
-          <ul className="flex flex-wrap gap-4 justify-center flex-row">
-            {recetas.map((receta, indice) => (
-              <div
-                className="bg-gray-800 rounded-lg p-4 cursor-pointer max-w-md flex flex-col"
-                id="receta-card"
-                key={indice}
-              >
-                <div>
-                  <img
-                    src="https://picsum.photos/600/400"
-                    alt=""
-                    className="w-full h-48 object-cover mb-4"
-                  ></img>
-                  <h3
-                    className="text-lg pb-2"
-                    onClick={
-                      () => null //lógica para abrir la receta
-                    }
-                  >
-                    {receta.nombre}
-                  </h3>
-                  <div className="flex flex-row gap-2 justify-end items-center">
-                    <button
-                      className="text-white text-xl px-2"
-                      onClick={
-                        () => null //lógica para menú de la receta
-                      }
+  function eliminarReceta(indice) {
+    setRecetas(recetas.filter((_, i) => i !== indice));
+  }
+
+  if (recetaSeleccionada === null) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto flex flex-col gap-4">
+        <div className="flex justify-between items-center">
+          <h2>Recetas</h2>
+          <button
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded"
+            onClick={abrirFormularioNuevo}
+          >
+            Agregar Receta
+          </button>
+        </div>
+        <p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>
+        <div id="card" className="bg-gray-900 rounded-lg p-6">
+          <div id="recetas-div">
+            <ul className="flex flex-wrap gap-4 justify-center flex-row">
+              {recetas.map((receta, indice) => (
+                <div
+                  className="bg-gray-800 rounded-lg p-4 max-w-md flex flex-col"
+                  id="receta-card"
+                  key={indice}
+                >
+                  <div>
+                    <img
+                      src="https://picsum.photos/600/400"
+                      alt=""
+                      className="w-full h-48 object-cover mb-4 cursor-pointer"
+                    ></img>
+                    <h3
+                      className="text-lg pb-2 cursor-pointer"
+                      onClick={() => {
+                        setRecetaSeleccionada(indice);
+                      }}
                     >
-                      ⋮
-                    </button>
+                      {receta.nombre}
+                    </h3>
+                    <div className="flex flex-row gap-2 justify-end items-center">
+                      <button
+                        className="text-white text-xl px-2"
+                        onClick={() => eliminarReceta(indice)}
+                      >
+                        X
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </ul>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div>
+          {formularioVisible && (
+            <div>
+              <label htmlFor="nombre">Nombre de la receta:</label>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+              />
+              {ingredientesVisible && (
+                <div>
+                  <ul>
+                    {ingredientesTemp.map((ingrediente, index) => (
+                      <Fragment key={index}>
+                        <li>
+                          {ingrediente.cantidad === null
+                            ? ingrediente.nombre
+                            : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+                        </li>
+                      </Fragment>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <label htmlFor="ingredientes" id="ingredientes-label">
+                Ingredientes:
+              </label>
+              <input
+                type="text"
+                id="nombre-ingrediente"
+                placeholder="Nombre del ingrediente"
+                value={inputNombre}
+                onChange={(e) => setInputNombre(e.target.value)}
+              />
+              <input
+                type="number"
+                id="cantidad-ingrediente"
+                placeholder="Cantidad"
+                value={inputCantidad}
+                onChange={(e) => setInputCantidad(e.target.value)}
+              />
+              <input
+                type="text"
+                id="unidad-ingrediente"
+                placeholder="Unidad (e.g., u, g, ml)"
+                value={inputUnidad}
+                onChange={(e) => setInputUnidad(e.target.value)}
+              />
+              <button
+                type="button"
+                id="agregar-ingrediente"
+                onClick={guardarIngrediente}
+              >
+                Guardar
+              </button>
+              <textarea
+                id="instrucciones"
+                name="instrucciones"
+                required
+                value={instrucciones}
+                onChange={(e) => setInstrucciones(e.target.value)}
+              />
+              <button type="submit" onClick={guardarReceta}>
+                Guardar
+              </button>
+              `
+            </div>
+          )}
         </div>
       </div>
-      <div>
-        {formularioVisible && (
-          <div>
-            <label htmlFor="nombre">Nombre de la receta:</label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-            />
-            {ingredientesVisible && (
-              <div>
-                <ul>
-                  {ingredientesTemp.map((ingrediente, index) => (
-                    <Fragment key={index}>
-                      <li>
-                        {ingrediente.cantidad === null
-                          ? ingrediente.nombre
-                          : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
-                      </li>
-                    </Fragment>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <label htmlFor="ingredientes" id="ingredientes-label">
-              Ingredientes:
-            </label>
-            <input
-              type="text"
-              id="nombre-ingrediente"
-              placeholder="Nombre del ingrediente"
-              value={inputNombre}
-              onChange={(e) => setInputNombre(e.target.value)}
-            />
-            <input
-              type="number"
-              id="cantidad-ingrediente"
-              placeholder="Cantidad"
-              value={inputCantidad}
-              onChange={(e) => setInputCantidad(e.target.value)}
-            />
-            <input
-              type="text"
-              id="unidad-ingrediente"
-              placeholder="Unidad (e.g., u, g, ml)"
-              value={inputUnidad}
-              onChange={(e) => setInputUnidad(e.target.value)}
-            />
-            <button
-              type="button"
-              id="agregar-ingrediente"
-              onClick={guardarIngrediente}
-            >
-              Guardar
-            </button>
-            <textarea
-              id="instrucciones"
-              name="instrucciones"
-              required
-              value={instrucciones}
-              onChange={(e) => setInstrucciones(e.target.value)}
-            />
-            <button type="submit" onClick={guardarReceta}>
-              Guardar
-            </button>
-            `
-          </div>
-        )}
+    );
+  } else {
+    return (
+      <div className="p-6 max-w-4xl mx-auto flex flex-col gap-4">
+        <div className="flex justify-between items-center">
+          <h2>{recetas[recetaSeleccionada].nombre}</h2>
+          <button
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded"
+            onClick={() => {
+              setRecetaSeleccionada(null);
+            }}
+          >
+            Atrás
+          </button>
+        </div>
+        <h3>Ingredientes:</h3>
+        <ul>
+          {recetas[recetaSeleccionada].ingredientes.map(
+            (ingrediente, index) => (
+              <Fragment key={index}>
+                <li>
+                  {ingrediente.cantidad === null
+                    ? ingrediente.nombre
+                    : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+                </li>
+              </Fragment>
+            ),
+          )}
+        </ul>
+        <h3>Instrucciones:</h3>
+        <p>{recetas[recetaSeleccionada].instrucciones}</p>
       </div>
-    </div>
-  );
+    );
+  }
 }
