@@ -2,6 +2,7 @@ export default function Header({ seccionActiva, onCambiarSeccion }) {
   return (
     <header className="flex justify-around items-center px-4 py-8 bg-gray-900">
       <h1 className="text-2xl font-bold">Kitchen Manager</h1>
+      {/* onClick={() => onCambiarSeccion("home")}*/}
       <nav className=" flex gap-4">
         <button
           id="btnRecetas"

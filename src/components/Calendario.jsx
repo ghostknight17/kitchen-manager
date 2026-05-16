@@ -3,23 +3,33 @@ import { Fragment } from "react";
 
 export default function Calendario({ calendario, setCalendario, recetas }) {
   const [formularioVisible, setFormularioVisible] = useState(false);
-  const [recetasVisible, setRecetasVisible] = useState(false);
   const [diaElegido, setDiaElegido] = useState(null);
-  const [comidaElegida, setComidaElegida] = useState(null);
+  const [comidaElegida, setComidaElegida] = useState("desayuno");
+  const [recetaElegida, setRecetaElegida] = useState(null);
 
-  function elegirComida(indice) {
-    setDiaElegido(indice);
+  function elegirDia(indice) {
     setFormularioVisible(true);
+    setDiaElegido(indice);
   }
 
-  function elegirReceta() {
-    setRecetasVisible(true);
-  }
+  function asignarReceta() {
+    if (diaElegido === null || !comidaElegida || !recetaElegida) {
+      alert("Por favor elige un día, tipo de comida y una receta.");
+      return;
+    }
 
-  function asignarReceta(receta) {
+    const nuevoCalendario = calendario.map((dia, indice) => {
+      if (indice === diaElegido) {
+        return {
+          ...dia,
+          [comidaElegida]: recetaElegida,
+        };
+      }
+      return dia;
+    });
+    setCalendario(nuevoCalendario);
     setFormularioVisible(false);
-    setRecetasVisible(false);
-    calendario[diaElegido][comidaElegida] = receta;
+    setRecetaElegida(null);
   }
 
   return (
@@ -31,7 +41,7 @@ export default function Calendario({ calendario, setCalendario, recetas }) {
           <ul>
             {calendario.map((dia, indice) => (
               <Fragment key={indice}>
-                <li onClick={() => elegirComida(indice)}>
+                <li onClick={() => elegirDia(indice)}>
                   {dia.nombre}: Desayuno:{" "}
                   {dia.desayuno === null ? "Sin asignar" : dia.desayuno.nombre},
                   Almuerzo:{" "}
@@ -59,21 +69,24 @@ export default function Calendario({ calendario, setCalendario, recetas }) {
               <option value="merienda">Merienda</option>
               <option value="cena">Cena</option>
             </select>
-            <button id="agregar-btn" onClick={() => elegirReceta()}>
-              Agregar
-            </button>
-            {recetasVisible && (
-              <>
-                <h3>Elegir receta:</h3>
-                <ul>
-                  {recetas.map((receta, indice) => (
-                    <li key={indice} onClick={() => asignarReceta(receta)}>
-                      {receta.nombre}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
+            <>
+              <h3>Elegir receta:</h3>
+              <div>
+                {recetas.map((receta, indice) => (
+                  <li key={indice}>
+                    <input
+                      type="radio"
+                      name="receta"
+                      onChange={() => setRecetaElegida(receta)}
+                    />
+                    <label> {receta.nombre} </label>
+                  </li>
+                ))}
+              </div>
+              <button id="agregar-btn" onClick={() => asignarReceta()}>
+                Asignar
+              </button>
+            </>
           </>
         )}
       </div>

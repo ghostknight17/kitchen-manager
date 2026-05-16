@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Fragment } from 'react';
+import { useState } from "react";
+import { Fragment } from "react";
 
 export default function Despensa({ despensa, setDespensa }) {
-  const [nombre, setNombre] = useState('');
-  const [cantidadDisponible, setCantidadDisponible] = useState('');
-  const [unidad, setUnidad] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [cantidadDisponible, setCantidadDisponible] = useState("");
+  const [unidad, setUnidad] = useState("");
   const [indiceEdicion, setIndiceEdicion] = useState(null);
 
   function guardarIngrediente() {
@@ -13,8 +13,8 @@ export default function Despensa({ despensa, setDespensa }) {
     const ingrediente = {
       nombre,
       cantidadDisponible:
-        cantidadDisponible === '' ? null : Number(cantidadDisponible),
-      unidad: unidad === '' ? null : unidad.trim(),
+        cantidadDisponible === "" ? null : Number(cantidadDisponible),
+      unidad: unidad === "" ? null : unidad.trim(),
     };
 
     if (indiceEdicion !== null) {
@@ -27,16 +27,16 @@ export default function Despensa({ despensa, setDespensa }) {
       setDespensa([...despensa, ingrediente]);
     }
 
-    setNombre('');
-    setCantidadDisponible('');
-    setUnidad('');
+    setNombre("");
+    setCantidadDisponible("");
+    setUnidad("");
   }
 
   function editarIngrediente(index) {
     const item = despensa[index];
     setNombre(item.nombre);
-    setCantidadDisponible(item.cantidadDisponible ?? '');
-    setUnidad(item.unidad ?? '');
+    setCantidadDisponible(item.cantidadDisponible ?? "");
+    setUnidad(item.unidad ?? "");
     setIndiceEdicion(index);
   }
 
@@ -69,8 +69,8 @@ export default function Despensa({ despensa, setDespensa }) {
         <div>
           <h3>
             {indiceEdicion !== null
-              ? 'Editando ingrediente'
-              : 'Agregar ingrediente'}
+              ? "Editando ingrediente"
+              : "Agregar ingrediente"}
           </h3>
           <input
             type="text"
@@ -92,7 +92,7 @@ export default function Despensa({ despensa, setDespensa }) {
             placeholder="Unidad (e.g., u, g, ml)"
           />
           <button type="button" onClick={guardarIngrediente}>
-            {indiceEdicion !== null ? 'Actualizar' : 'Guardar'}
+            {indiceEdicion !== null ? "Actualizar" : "Guardar"}
           </button>
         </div>
       </div>
