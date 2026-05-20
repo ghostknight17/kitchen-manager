@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import Header from "./components/Header";
-// import Home from './components/Home';
-import Recetas from "./components/Recetas";
-import Despensa from "./components/Despensa";
-import Calendario from "./components/Calendario";
+import Contenido from "./components/Contenido";
 import { Ingrediente, Receta, DiaCalendario } from "./types";
 
 const SECCIONES = {
@@ -67,36 +64,17 @@ let semana = [
 ];
 
 export default function App() {
-  const [recetas, setRecetas] = useLocalStorage("recetas", []);
-  const [despensa, setDespensa] = useLocalStorage("despensa", []);
-  const [calendario, setCalendario] = useLocalStorage("calendario", semana);
+  const [recetas, setRecetas] = useLocalStorage<Receta[]>("recetas", []);
+  const [despensa, setDespensa] = useLocalStorage<Ingrediente[]>(
+    "despensa",
+    [],
+  );
+  const [calendario, setCalendario] = useLocalStorage<DiaCalendario[]>(
+    "calendario",
+    semana,
+  );
 
   const [seccionActiva, setSeccionActiva] = useState(SECCIONES.despensa);
-
-  function Contenido({ seccionActiva }) {
-    if (seccionActiva === "recetas") {
-      return (
-        <Recetas
-          recetas={recetas}
-          setRecetas={setRecetas}
-          despensa={despensa}
-        />
-      );
-    } else if (seccionActiva === "despensa") {
-      return <Despensa despensa={despensa} setDespensa={setDespensa} />;
-    } else if (seccionActiva === "calendario") {
-      return (
-        <Calendario
-          calendario={calendario}
-          setCalendario={setCalendario}
-          recetas={recetas}
-        />
-      );
-    }
-    // } else {
-    //   return <Home />;
-    // }
-  }
 
   return (
     <>
@@ -105,7 +83,15 @@ export default function App() {
         onCambiarSeccion={setSeccionActiva}
       />
 
-      <Contenido seccionActiva={seccionActiva} />
+      <Contenido
+        seccionActiva={seccionActiva}
+        recetas={recetas}
+        setRecetas={setRecetas}
+        despensa={despensa}
+        setDespensa={setDespensa}
+        calendario={calendario}
+        setCalendario={setCalendario}
+      />
     </>
   );
 }
