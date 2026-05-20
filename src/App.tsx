@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import Header from "./components/Header";
 import Contenido from "./components/Contenido";
-import { Ingrediente, Receta, DiaCalendario } from "./types";
-
-const SECCIONES = {
-  // home: 'home',
-  recetas: "recetas",
-  despensa: "despensa",
-  calendario: "calendario",
-};
+import { Ingrediente, Receta, DiaCalendario, Seccion } from "./types";
 
 let semana = [
   {
@@ -74,7 +67,7 @@ export default function App() {
     semana,
   );
 
-  const [seccionActiva, setSeccionActiva] = useState(SECCIONES.despensa);
+  const [seccionActiva, setSeccionActiva] = useState<Seccion>("recetas");
 
   return (
     <>

@@ -17,3 +17,5 @@ export type DiaCalendario = {
   merienda: Receta | null;
   cena: Receta | null;
 };
+
+export type Seccion = "home" | "recetas" | "despensa" | "calendario";
