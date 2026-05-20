@@ -1,11 +1,18 @@
-export default function Header({ seccionActiva, onCambiarSeccion }) {
+import { Seccion } from "../types";
+
+export default function Header({
+  seccionActiva,
+  onCambiarSeccion,
+}: {
+  seccionActiva: Seccion;
+  onCambiarSeccion: (seccion: Seccion) => void;
+}) {
   return (
     <header className="flex justify-around items-center px-4 py-8 bg-gray-900">
       <h1 className="text-2xl font-bold">Kitchen Manager</h1>
       {/* onClick={() => onCambiarSeccion("home")}*/}
       <nav className=" flex gap-4">
         <button
-          id="btnRecetas"
           className={
             seccionActiva === "recetas"
               ? "px-1 py-2 text-white border-b-2 border-orange-500 hover:text-white hover:border-slate-500 transition-colors"
@@ -16,7 +23,6 @@ export default function Header({ seccionActiva, onCambiarSeccion }) {
           Recetas
         </button>
         <button
-          id="btnDespensa"
           className={
             seccionActiva === "despensa"
               ? "px-1 py-2 text-white border-b-2 border-orange-500 hover:text-white hover:border-slate-500 transition-colors"
@@ -27,7 +33,6 @@ export default function Header({ seccionActiva, onCambiarSeccion }) {
           Despensa
         </button>
         <button
-          id="btnCalendario"
           className={
             seccionActiva === "calendario"
               ? "px-1 py-2 text-white border-b-2 border-orange-500 hover:text-white hover:border-slate-500 transition-colors"
