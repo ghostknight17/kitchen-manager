@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Fragment } from "react";
 
-export default function Recetas({ recetas, setRecetas }) {
+export default function Recetas({ recetas, setRecetas, despensa }) {
   const [formularioVisible, setFormularioVisible] = useState(false);
   const [ingredientesVisible, setIngredientesVisible] = useState(false);
   const [indiceEdicion, setIndiceEdicion] = useState(null);
@@ -217,15 +217,37 @@ export default function Recetas({ recetas, setRecetas }) {
         <h3>Ingredientes:</h3>
         <ul>
           {recetas[recetaSeleccionada].ingredientes.map(
-            (ingrediente, index) => (
-              <Fragment key={index}>
-                <li>
-                  {ingrediente.cantidad === null
-                    ? ingrediente.nombre
-                    : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+            (ingrediente, indice) => {
+              const ingredienteDisponible = despensa.find(
+                (item) =>
+                  item.nombre.toLowerCase() ===
+                  ingrediente.nombre.toLowerCase(),
+              );
+              let estilo = ingredienteDisponible ? "" : "text-red-500";
+              let texto = "";
+              if (ingrediente.cantidad === null) {
+                texto = ingredienteDisponible
+                  ? `${ingrediente.nombre} a gusto`
+                  : `${ingrediente.nombre} a gusto (no disponible)`;
+              } else if (ingredienteDisponible) {
+                if (
+                  ingredienteDisponible.cantidadDisponible >=
+                  ingrediente.cantidad
+                ) {
+                  texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`;
+                } else {
+                  texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre} (insuficiente)`;
+                  estilo = "text-orange-500";
+                }
+              } else {
+                texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre} (no disponible)`;
+              }
+              return (
+                <li className={estilo} key={indice}>
+                  {texto}
                 </li>
-              </Fragment>
-            ),
+              );
+            },
           )}
         </ul>
         <h3>Instrucciones:</h3>

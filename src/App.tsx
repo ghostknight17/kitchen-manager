@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Recetas from "./components/Recetas";
 import Despensa from "./components/Despensa";
 import Calendario from "./components/Calendario";
+import { Ingrediente, Receta, DiaCalendario } from "./types";
 
 const SECCIONES = {
   // home: 'home',
@@ -74,7 +75,13 @@ export default function App() {
 
   function Contenido({ seccionActiva }) {
     if (seccionActiva === "recetas") {
-      return <Recetas recetas={recetas} setRecetas={setRecetas} />;
+      return (
+        <Recetas
+          recetas={recetas}
+          setRecetas={setRecetas}
+          despensa={despensa}
+        />
+      );
     } else if (seccionActiva === "despensa") {
       return <Despensa despensa={despensa} setDespensa={setDespensa} />;
     } else if (seccionActiva === "calendario") {
