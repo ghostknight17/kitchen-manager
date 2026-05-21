@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { Fragment } from "react";
+import { DiaCalendario, Indice, Receta } from "../types";
 
-export default function Calendario({ calendario, setCalendario, recetas }) {
+export default function Calendario({
+  calendario,
+  setCalendario,
+  recetas,
+}: {
+  calendario: DiaCalendario[];
+  setCalendario: (calendario: DiaCalendario[]) => void;
+  recetas: Receta[];
+}) {
   const [formularioVisible, setFormularioVisible] = useState(false);
-  const [diaElegido, setDiaElegido] = useState(null);
+  const [diaElegido, setDiaElegido] = useState<Indice>(null);
   const [comidaElegida, setComidaElegida] = useState("desayuno");
-  const [recetaElegida, setRecetaElegida] = useState(null);
+  const [recetaElegida, setRecetaElegida] = useState<Receta | null>(null);
 
-  function elegirDia(indice) {
+  function elegirDia(indice: number) {
     setFormularioVisible(true);
     setDiaElegido(indice);
   }
