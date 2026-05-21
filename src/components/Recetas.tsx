@@ -51,7 +51,7 @@ export default function Recetas({
     const ingrediente = {
       nombre: inputNombre.trim(),
       cantidad: Number(inputCantidad) || null,
-      unidad: inputUnidad || null,
+      unidad: inputUnidad.trim() || null,
     };
 
     setingredientes([...ingredientes, ingrediente]);

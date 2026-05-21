@@ -1,17 +1,24 @@
 import { useState } from "react";
 import { Fragment } from "react";
+import { Indice, Ingrediente } from "../types";
 
-export default function Despensa({ despensa, setDespensa }) {
+export default function Despensa({
+  despensa,
+  setDespensa,
+}: {
+  despensa: Ingrediente[];
+  setDespensa: (despensa: Ingrediente[]) => void;
+}) {
   const [nombre, setNombre] = useState("");
   const [cantidad, setcantidad] = useState("");
   const [unidad, setUnidad] = useState("");
-  const [indiceEdicion, setIndiceEdicion] = useState(null);
+  const [indiceEdicion, setIndiceEdicion] = useState<Indice>(null);
 
   function guardarIngrediente() {
     if (!nombre.trim()) return;
 
     const ingrediente = {
-      nombre,
+      nombre: nombre.trim(),
       cantidad: cantidad === "" ? null : Number(cantidad),
       unidad: unidad === "" ? null : unidad.trim(),
     };
@@ -31,16 +38,16 @@ export default function Despensa({ despensa, setDespensa }) {
     setUnidad("");
   }
 
-  function editarIngrediente(index) {
-    const item = despensa[index];
+  function editarIngrediente(indice: number) {
+    const item = despensa[indice];
     setNombre(item.nombre);
-    setcantidad(item.cantidad ?? "");
+    setcantidad(String(item.cantidad) ?? "");
     setUnidad(item.unidad ?? "");
-    setIndiceEdicion(index);
+    setIndiceEdicion(indice);
   }
 
-  function eliminarIngrediente(index) {
-    setDespensa(despensa.filter((_, i) => i !== index));
+  function eliminarIngrediente(indice: number) {
+    setDespensa(despensa.filter((_, i) => i !== indice));
   }
 
   return (
@@ -49,17 +56,17 @@ export default function Despensa({ despensa, setDespensa }) {
       <p>Aquí puedes gestionar tus ingredientes guardados.</p>
       <div id="card" className="bg-gray-900 rounded-lg p-6 ">
         <ul>
-          {despensa.map((ingrediente, index) => (
-            <Fragment key={index}>
+          {despensa.map((ingrediente, indice) => (
+            <Fragment key={indice}>
               <li>
                 {ingrediente.cantidad === null
                   ? ingrediente.nombre
                   : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
               </li>
-              <button type="button" onClick={() => editarIngrediente(index)}>
+              <button type="button" onClick={() => editarIngrediente(indice)}>
                 Editar
               </button>
-              <button type="button" onClick={() => eliminarIngrediente(index)}>
+              <button type="button" onClick={() => eliminarIngrediente(indice)}>
                 X
               </button>
             </Fragment>
