@@ -3,7 +3,7 @@ import { Fragment } from "react";
 
 export default function Despensa({ despensa, setDespensa }) {
   const [nombre, setNombre] = useState("");
-  const [cantidadDisponible, setCantidadDisponible] = useState("");
+  const [cantidad, setcantidad] = useState("");
   const [unidad, setUnidad] = useState("");
   const [indiceEdicion, setIndiceEdicion] = useState(null);
 
@@ -12,8 +12,7 @@ export default function Despensa({ despensa, setDespensa }) {
 
     const ingrediente = {
       nombre,
-      cantidadDisponible:
-        cantidadDisponible === "" ? null : Number(cantidadDisponible),
+      cantidad: cantidad === "" ? null : Number(cantidad),
       unidad: unidad === "" ? null : unidad.trim(),
     };
 
@@ -28,14 +27,14 @@ export default function Despensa({ despensa, setDespensa }) {
     }
 
     setNombre("");
-    setCantidadDisponible("");
+    setcantidad("");
     setUnidad("");
   }
 
   function editarIngrediente(index) {
     const item = despensa[index];
     setNombre(item.nombre);
-    setCantidadDisponible(item.cantidadDisponible ?? "");
+    setcantidad(item.cantidad ?? "");
     setUnidad(item.unidad ?? "");
     setIndiceEdicion(index);
   }
@@ -53,9 +52,9 @@ export default function Despensa({ despensa, setDespensa }) {
           {despensa.map((ingrediente, index) => (
             <Fragment key={index}>
               <li>
-                {ingrediente.cantidadDisponible === null
+                {ingrediente.cantidad === null
                   ? ingrediente.nombre
-                  : `${ingrediente.cantidadDisponible} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+                  : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
               </li>
               <button type="button" onClick={() => editarIngrediente(index)}>
                 Editar
@@ -81,8 +80,8 @@ export default function Despensa({ despensa, setDespensa }) {
           />
           <input
             type="number"
-            value={cantidadDisponible}
-            onChange={(e) => setCantidadDisponible(e.target.value)}
+            value={cantidad}
+            onChange={(e) => setcantidad(e.target.value)}
             placeholder="Cantidad disponible"
           />
           <input

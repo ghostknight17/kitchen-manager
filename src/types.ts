@@ -19,3 +19,5 @@ export type DiaCalendario = {
 };
 
 export type Seccion = "home" | "recetas" | "despensa" | "calendario";
+
+export type Indice = number | null;

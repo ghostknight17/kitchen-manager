@@ -1,15 +1,24 @@
 import { useState } from "react";
 import { Fragment } from "react";
+import { Receta, Ingrediente, Indice } from "../types";
 
-export default function Recetas({ recetas, setRecetas, despensa }) {
+export default function Recetas({
+  recetas,
+  setRecetas,
+  despensa,
+}: {
+  recetas: Receta[];
+  setRecetas: (recetas: Receta[]) => void;
+  despensa: Ingrediente[];
+}) {
   const [formularioVisible, setFormularioVisible] = useState(false);
   const [ingredientesVisible, setIngredientesVisible] = useState(false);
-  const [indiceEdicion, setIndiceEdicion] = useState(null);
+  const [indiceEdicion, setIndiceEdicion] = useState<Indice>(null);
 
-  const [recetaSeleccionada, setRecetaSeleccionada] = useState(null);
+  const [recetaSeleccionada, setRecetaSeleccionada] = useState<Indice>(null);
 
   const [nombre, setNombre] = useState("");
-  const [ingredientesTemp, setIngredientesTemp] = useState([]);
+  const [ingredientes, setingredientes] = useState<Ingrediente[]>([]);
   const [instrucciones, setInstrucciones] = useState("");
 
   const [inputNombre, setInputNombre] = useState("");
@@ -18,16 +27,16 @@ export default function Recetas({ recetas, setRecetas, despensa }) {
 
   function abrirFormularioNuevo() {
     setNombre("");
-    setIngredientesTemp([]);
+    setingredientes([]);
     setInstrucciones("");
     setIndiceEdicion(null);
     setFormularioVisible(true);
   }
 
-  function abrirFormularioEdicion(indice) {
+  function abrirFormularioEdicion(indice: number) {
     const receta = recetas[indice];
     setNombre(receta.nombre);
-    setIngredientesTemp(receta.ingredientes);
+    setingredientes(receta.ingredientes);
     setInstrucciones(receta.instrucciones);
     setIndiceEdicion(indice);
     setFormularioVisible(true);
@@ -41,11 +50,11 @@ export default function Recetas({ recetas, setRecetas, despensa }) {
 
     const ingrediente = {
       nombre: inputNombre.trim(),
-      cantidad: inputCantidad || null,
+      cantidad: Number(inputCantidad) || null,
       unidad: inputUnidad || null,
     };
 
-    setIngredientesTemp([...ingredientesTemp, ingrediente]);
+    setingredientes([...ingredientes, ingrediente]);
     setInputNombre("");
     setInputCantidad("");
     setInputUnidad("");
@@ -61,19 +70,19 @@ export default function Recetas({ recetas, setRecetas, despensa }) {
 
     const receta = {
       nombre: nombre.trim(),
-      ingredientes: ingredientesTemp,
+      ingredientes: ingredientes,
       instrucciones: instrucciones,
     };
 
     setNombre("");
-    setIngredientesTemp([]);
+    setingredientes([]);
     setInstrucciones("");
 
     setFormularioVisible(false);
     setRecetas([...recetas, receta]);
   }
 
-  function eliminarReceta(indice) {
+  function eliminarReceta(indice: number) {
     setRecetas(recetas.filter((_, i) => i !== indice));
   }
 
@@ -141,7 +150,7 @@ export default function Recetas({ recetas, setRecetas, despensa }) {
               {ingredientesVisible && (
                 <div>
                   <ul>
-                    {ingredientesTemp.map((ingrediente, index) => (
+                    {ingredientes.map((ingrediente, index) => (
                       <Fragment key={index}>
                         <li>
                           {ingrediente.cantidad === null
@@ -166,7 +175,7 @@ export default function Recetas({ recetas, setRecetas, despensa }) {
               <input
                 type="number"
                 id="cantidad-ingrediente"
-                placeholder="Cantidad"
+                placeholder="0"
                 value={inputCantidad}
                 onChange={(e) => setInputCantidad(e.target.value)}
               />
@@ -231,8 +240,8 @@ export default function Recetas({ recetas, setRecetas, despensa }) {
                   : `${ingrediente.nombre} a gusto (no disponible)`;
               } else if (ingredienteDisponible) {
                 if (
-                  ingredienteDisponible.cantidadDisponible >=
-                  ingrediente.cantidad
+                  ingredienteDisponible.cantidad &&
+                  ingredienteDisponible.cantidad >= ingrediente.cantidad
                 ) {
                   texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`;
                 } else {
