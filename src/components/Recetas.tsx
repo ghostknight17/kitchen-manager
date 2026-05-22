@@ -18,7 +18,7 @@ export default function Recetas({
   const [recetaSeleccionada, setRecetaSeleccionada] = useState<Indice>(null);
 
   const [nombre, setNombre] = useState("");
-  const [ingredientes, setingredientes] = useState<Ingrediente[]>([]);
+  const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]);
   const [instrucciones, setInstrucciones] = useState("");
 
   const [inputNombre, setInputNombre] = useState("");
@@ -27,16 +27,18 @@ export default function Recetas({
 
   function abrirFormularioNuevo() {
     setNombre("");
-    setingredientes([]);
+    setIngredientes([]);
     setInstrucciones("");
     setIndiceEdicion(null);
-    setFormularioVisible(true);
+    formularioVisible
+      ? setFormularioVisible(false)
+      : setFormularioVisible(true);
   }
 
   function abrirFormularioEdicion(indice: number) {
     const receta = recetas[indice];
     setNombre(receta.nombre);
-    setingredientes(receta.ingredientes);
+    setIngredientes(receta.ingredientes);
     setInstrucciones(receta.instrucciones);
     setIndiceEdicion(indice);
     setFormularioVisible(true);
@@ -54,7 +56,7 @@ export default function Recetas({
       unidad: inputUnidad.trim() || null,
     };
 
-    setingredientes([...ingredientes, ingrediente]);
+    setIngredientes([...ingredientes, ingrediente]);
     setInputNombre("");
     setInputCantidad("");
     setInputUnidad("");
@@ -75,7 +77,7 @@ export default function Recetas({
     };
 
     setNombre("");
-    setingredientes([]);
+    setIngredientes([]);
     setInstrucciones("");
 
     setFormularioVisible(false);
@@ -90,22 +92,25 @@ export default function Recetas({
     return (
       <div className="p-6 max-w-4xl mx-auto flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <h2>Recetas</h2>
+          <h2>Recetario</h2>
           <button
-            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded"
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full"
             onClick={abrirFormularioNuevo}
           >
-            Agregar Receta
+            {formularioVisible ? "Cancelar" : "Agregar receta"}
           </button>
         </div>
-        <p>Aquí puedes encontrar deliciosas recetas para preparar en casa.</p>
-        <div id="card" className="bg-gray-900 rounded-lg p-6">
-          <div id="recetas-div">
+        <p>
+          {recetas.length === 0
+            ? "Podés empezar por agregar una receta al recetario."
+            : "Tus recetas se guardan acá."}
+        </p>
+        <div className="bg-gray-900 rounded-lg p-6">
+          <div>
             <ul className="flex flex-wrap gap-4 justify-center flex-row">
               {recetas.map((receta, indice) => (
                 <div
                   className="bg-gray-800 rounded-lg p-4 max-w-md flex flex-col"
-                  id="receta-card"
                   key={indice}
                 >
                   <div>
@@ -138,14 +143,14 @@ export default function Recetas({
         </div>
         <div>
           {formularioVisible && (
-            <div>
-              <label htmlFor="nombre">Nombre de la receta:</label>
+            <div className="flex flex-col gap-2 bg-gray-900 rounded-lg p-8 items-start">
+              <label htmlFor="nombre">Nombre de la receta</label>
               <input
                 type="text"
-                id="nombre"
                 name="nombre"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
+                className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
               />
               {ingredientesVisible && (
                 <div>
@@ -154,56 +159,59 @@ export default function Recetas({
                       <Fragment key={index}>
                         <li>
                           {ingrediente.cantidad === null
-                            ? ingrediente.nombre
-                            : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+                            ? `• ${ingrediente.nombre}`
+                            : `• ${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
                         </li>
                       </Fragment>
                     ))}
                   </ul>
                 </div>
               )}
-              <label htmlFor="ingredientes" id="ingredientes-label">
-                Ingredientes:
+              <label htmlFor="ingredientes" className="mt-3">
+                Ingredientes
               </label>
               <input
                 type="text"
-                id="nombre-ingrediente"
                 placeholder="Nombre del ingrediente"
                 value={inputNombre}
                 onChange={(e) => setInputNombre(e.target.value)}
+                className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
               />
               <input
                 type="number"
-                id="cantidad-ingrediente"
-                placeholder="0"
+                placeholder="Cantidad"
                 value={inputCantidad}
                 onChange={(e) => setInputCantidad(e.target.value)}
+                className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
               />
               <input
                 type="text"
-                id="unidad-ingrediente"
                 placeholder="Unidad (e.g., u, g, ml)"
                 value={inputUnidad}
                 onChange={(e) => setInputUnidad(e.target.value)}
+                className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
+              />
+              <button type="button" onClick={guardarIngrediente}>
+                Agregar ingrediente
+              </button>
+              <label htmlFor="instrucciones" className="mt-3">
+                Instrucciones o pasos
+              </label>
+              <textarea
+                name="instrucciones"
+                required
+                placeholder="Describí los pasos necesarios para realizar esta receta."
+                value={instrucciones}
+                onChange={(e) => setInstrucciones(e.target.value)}
+                className="w-10/12 h-64 shrink-0 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3 resize-none"
               />
               <button
-                type="button"
-                id="agregar-ingrediente"
-                onClick={guardarIngrediente}
+                type="submit"
+                onClick={guardarReceta}
+                className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full mt-6"
               >
                 Guardar
               </button>
-              <textarea
-                id="instrucciones"
-                name="instrucciones"
-                required
-                value={instrucciones}
-                onChange={(e) => setInstrucciones(e.target.value)}
-              />
-              <button type="submit" onClick={guardarReceta}>
-                Guardar
-              </button>
-              `
             </div>
           )}
         </div>
@@ -215,7 +223,7 @@ export default function Recetas({
         <div className="flex justify-between items-center">
           <h2>{recetas[recetaSeleccionada].nombre}</h2>
           <button
-            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded"
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full"
             onClick={() => {
               setRecetaSeleccionada(null);
             }}
@@ -234,33 +242,60 @@ export default function Recetas({
               );
               let estilo = ingredienteDisponible ? "" : "text-red-500";
               let texto = "";
+              let disponibilidad = "";
               if (ingrediente.cantidad === null) {
-                texto = ingredienteDisponible
-                  ? `${ingrediente.nombre} a gusto`
-                  : `${ingrediente.nombre} a gusto (no disponible)`;
+                if (ingredienteDisponible) {
+                  texto = `${ingrediente.nombre} a gusto`;
+                  disponibilidad = "";
+                } else {
+                  texto = `${ingrediente.nombre} a gusto`;
+                  disponibilidad = "(no disponible)";
+                }
               } else if (ingredienteDisponible) {
                 if (
                   ingredienteDisponible.cantidad &&
                   ingredienteDisponible.cantidad >= ingrediente.cantidad
                 ) {
-                  texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`;
+                  if (ingrediente.unidad) {
+                    texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`;
+                    disponibilidad = "";
+                  } else {
+                    texto = `${ingrediente.cantidad} ${ingrediente.nombre}`;
+                    disponibilidad = "";
+                  }
                 } else {
-                  texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre} (insuficiente)`;
-                  estilo = "text-orange-500";
+                  if (ingrediente.unidad) {
+                    texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`;
+                    disponibilidad = "(insuficiente)";
+                    estilo = "text-orange-500";
+                  } else {
+                    texto = `${ingrediente.cantidad} ${ingrediente.nombre}`;
+                    disponibilidad = "(insuficiente)";
+                    estilo = "text-orange-500";
+                  }
                 }
               } else {
-                texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre} (no disponible)`;
+                if (ingrediente.unidad) {
+                  texto = `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`;
+                  disponibilidad = "(no disponible)";
+                } else {
+                  texto = `${ingrediente.cantidad} ${ingrediente.nombre}`;
+                  disponibilidad = "(no disponible)";
+                }
               }
               return (
-                <li className={estilo} key={indice}>
+                <li key={indice}>
                   {texto}
+                  <span className={estilo}>{` ${disponibilidad}`}</span>
                 </li>
               );
             },
           )}
         </ul>
         <h3>Instrucciones:</h3>
-        <p>{recetas[recetaSeleccionada].instrucciones}</p>
+        <p className="whitespace-pre-wrap">
+          {recetas[recetaSeleccionada].instrucciones}
+        </p>
       </div>
     );
   }

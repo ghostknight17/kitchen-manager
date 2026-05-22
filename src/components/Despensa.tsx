@@ -10,7 +10,7 @@ export default function Despensa({
   setDespensa: (despensa: Ingrediente[]) => void;
 }) {
   const [nombre, setNombre] = useState("");
-  const [cantidad, setcantidad] = useState("");
+  const [cantidad, setCantidad] = useState("");
   const [unidad, setUnidad] = useState("");
   const [indiceEdicion, setIndiceEdicion] = useState<Indice>(null);
 
@@ -34,14 +34,14 @@ export default function Despensa({
     }
 
     setNombre("");
-    setcantidad("");
+    setCantidad("");
     setUnidad("");
   }
 
   function editarIngrediente(indice: number) {
     const item = despensa[indice];
     setNombre(item.nombre);
-    setcantidad(String(item.cantidad) ?? "");
+    setCantidad(String(item.cantidad) ?? "");
     setUnidad(item.unidad ?? "");
     setIndiceEdicion(indice);
   }
@@ -54,7 +54,7 @@ export default function Despensa({
     <div className="p-6 max-w-4xl mx-auto">
       <h2>Despensa</h2>
       <p>Aquí puedes gestionar tus ingredientes guardados.</p>
-      <div id="card" className="bg-gray-900 rounded-lg p-6 ">
+      <div className="bg-gray-900 rounded-lg p-6 ">
         <ul>
           {despensa.map((ingrediente, indice) => (
             <Fragment key={indice}>
@@ -84,21 +84,28 @@ export default function Despensa({
             onChange={(e) => setNombre(e.target.value)}
             placeholder="Nombre del ingrediente"
             required
+            className="w-80 rounded-xl bg-gray-700 p-1 text-gray-300"
           />
           <input
             type="number"
             value={cantidad}
-            onChange={(e) => setcantidad(e.target.value)}
+            onChange={(e) => setCantidad(e.target.value)}
             placeholder="Cantidad disponible"
+            className="w-80 rounded-xl bg-gray-700 p-1 text-gray-300"
           />
           <input
             type="text"
             value={unidad}
             onChange={(e) => setUnidad(e.target.value)}
             placeholder="Unidad (e.g., u, g, ml)"
+            className="w-80 rounded-xl bg-gray-700 p-1 text-gray-300"
           />
-          <button type="button" onClick={guardarIngrediente}>
-            {indiceEdicion !== null ? "Actualizar" : "Guardar"}
+          <button
+            type="button"
+            onClick={guardarIngrediente}
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full"
+          >
+            {indiceEdicion !== null ? "Aceptar" : "Agregar"}
           </button>
         </div>
       </div>

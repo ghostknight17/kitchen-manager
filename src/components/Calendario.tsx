@@ -69,7 +69,6 @@ export default function Calendario({
           <>
             <h3>Agregar Comida</h3>
             <select
-              id="tipo-comida"
               value={comidaElegida}
               onChange={(e) => setComidaElegida(e.target.value)}
             >
@@ -92,9 +91,7 @@ export default function Calendario({
                   </li>
                 ))}
               </div>
-              <button id="agregar-btn" onClick={() => asignarReceta()}>
-                Asignar
-              </button>
+              <button onClick={() => asignarReceta()}>Asignar</button>
             </>
           </>
         )}
