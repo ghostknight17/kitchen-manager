@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Fragment } from "react";
 import { Receta, Ingrediente, Indice } from "../types";
 
 export default function Recetas({
@@ -42,6 +41,7 @@ export default function Recetas({
     setInstrucciones(receta.instrucciones);
     setIndiceEdicion(indice);
     setFormularioVisible(true);
+    setIngredientesVisible(true);
   }
 
   function guardarIngrediente() {
@@ -76,16 +76,29 @@ export default function Recetas({
       instrucciones: instrucciones,
     };
 
+    if (indiceEdicion !== null) {
+      const actualizada = recetas.map((item, i) =>
+        i == indiceEdicion ? receta : item,
+      );
+      setRecetas(actualizada);
+      setIndiceEdicion(null);
+    } else {
+      setRecetas([...recetas, receta]);
+    }
+
     setNombre("");
     setIngredientes([]);
     setInstrucciones("");
 
     setFormularioVisible(false);
-    setRecetas([...recetas, receta]);
   }
 
   function eliminarReceta(indice: number) {
     setRecetas(recetas.filter((_, i) => i !== indice));
+  }
+
+  function eliminarIngrediente(indice: number) {
+    setIngredientes(ingredientes.filter((_, i) => i !== indice));
   }
 
   if (recetaSeleccionada === null) {
@@ -129,7 +142,13 @@ export default function Recetas({
                     </h3>
                     <div className="flex flex-row gap-2 justify-end items-center">
                       <button
-                        className="text-white text-xl px-2"
+                        type="button"
+                        onClick={() => abrirFormularioEdicion(indice)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="px-2"
                         onClick={() => eliminarReceta(indice)}
                       >
                         X
@@ -155,21 +174,33 @@ export default function Recetas({
               {ingredientesVisible && (
                 <div>
                   <ul>
-                    {ingredientes.map((ingrediente, index) => (
-                      <Fragment key={index}>
+                    {ingredientes.map((ingrediente, indice) => (
+                      <div
+                        key={indice}
+                        className="max-w-screen-sm flex flex-row mb-2"
+                      >
                         <li>
                           {ingrediente.cantidad === null
                             ? `• ${ingrediente.nombre}`
-                            : `• ${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+                            : ingrediente.unidad
+                              ? `• ${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`
+                              : `• ${ingrediente.cantidad} ${ingrediente.nombre}`}
                         </li>
-                      </Fragment>
+                        <div className="ml-auto">
+                          <button
+                            type="button"
+                            onClick={() => eliminarIngrediente(indice)}
+                            className="ml-6"
+                          >
+                            X
+                          </button>
+                        </div>
+                      </div>
                     ))}
                   </ul>
                 </div>
               )}
-              <label htmlFor="ingredientes" className="mt-3">
-                Ingredientes
-              </label>
+              <label htmlFor="ingredientes">Ingredientes</label>
               <input
                 type="text"
                 placeholder="Nombre del ingrediente"
@@ -186,7 +217,7 @@ export default function Recetas({
               />
               <input
                 type="text"
-                placeholder="Unidad (e.g., u, g, ml)"
+                placeholder="Unidad (u, g, ml, cc, tazas, etc)"
                 value={inputUnidad}
                 onChange={(e) => setInputUnidad(e.target.value)}
                 className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"

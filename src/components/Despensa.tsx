@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Fragment } from "react";
 import { Indice, Ingrediente } from "../types";
 
 export default function Despensa({
@@ -52,61 +51,76 @@ export default function Despensa({
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2>Despensa</h2>
-      <p>Aquí puedes gestionar tus ingredientes guardados.</p>
-      <div className="bg-gray-900 rounded-lg p-6 ">
+      <div className="flex justify-between items-center mb-6">
+        <h2>Despensa</h2>
+      </div>
+      <p>Acá se gestiona el contenido de la despensa.</p>
+      <div className="bg-gray-900 rounded-lg p-6 mt-4">
         <ul>
           {despensa.map((ingrediente, indice) => (
-            <Fragment key={indice}>
+            <div
+              key={indice}
+              className="bg-gray-800 rounded-lg p-4 max-w-screen-sm flex flex-row mb-2"
+            >
               <li>
                 {ingrediente.cantidad === null
-                  ? ingrediente.nombre
-                  : `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`}
+                  ? `${ingrediente.nombre}`
+                  : ingrediente.unidad
+                    ? `${ingrediente.cantidad} ${ingrediente.unidad} de ${ingrediente.nombre}`
+                    : `${ingrediente.cantidad} ${ingrediente.nombre}`}
               </li>
-              <button type="button" onClick={() => editarIngrediente(indice)}>
-                Editar
-              </button>
-              <button type="button" onClick={() => eliminarIngrediente(indice)}>
-                X
-              </button>
-            </Fragment>
+              <div className="ml-auto">
+                <button type="button" onClick={() => editarIngrediente(indice)}>
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => eliminarIngrediente(indice)}
+                  className="ml-6"
+                >
+                  X
+                </button>
+              </div>
+            </div>
           ))}
         </ul>
-        <div>
-          <h3>
-            {indiceEdicion !== null
-              ? "Editando ingrediente"
-              : "Agregar ingrediente"}
-          </h3>
-          <input
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            placeholder="Nombre del ingrediente"
-            required
-            className="w-80 rounded-xl bg-gray-700 p-1 text-gray-300"
-          />
-          <input
-            type="number"
-            value={cantidad}
-            onChange={(e) => setCantidad(e.target.value)}
-            placeholder="Cantidad disponible"
-            className="w-80 rounded-xl bg-gray-700 p-1 text-gray-300"
-          />
-          <input
-            type="text"
-            value={unidad}
-            onChange={(e) => setUnidad(e.target.value)}
-            placeholder="Unidad (e.g., u, g, ml)"
-            className="w-80 rounded-xl bg-gray-700 p-1 text-gray-300"
-          />
-          <button
-            type="button"
-            onClick={guardarIngrediente}
-            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full"
-          >
-            {indiceEdicion !== null ? "Aceptar" : "Agregar"}
-          </button>
+        <h3 className="mt-6 ml-4 mb-2">
+          {indiceEdicion !== null
+            ? "Editando el ingrediente seleccionado:"
+            : "Sólo el nombre del ingrediente es obligatorio para agregarlo a la despensa:"}
+        </h3>
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col gap-2 p-2 items-start">
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              placeholder="Nombre del ingrediente"
+              required
+              className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
+            />
+            <input
+              type="number"
+              value={cantidad}
+              onChange={(e) => setCantidad(e.target.value)}
+              placeholder="Cantidad disponible"
+              className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
+            />
+            <input
+              type="text"
+              value={unidad}
+              onChange={(e) => setUnidad(e.target.value)}
+              placeholder="Unidad (u, g, ml, cc, tazas, etc)"
+              className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
+            />
+            <button
+              type="button"
+              onClick={guardarIngrediente}
+              className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full max-h-12 mt-4"
+            >
+              {indiceEdicion !== null ? "Aceptar" : "Agregar"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
