@@ -54,7 +54,7 @@ export default function Despensa({
       <div className="flex justify-between items-center mb-6">
         <h2>Despensa</h2>
       </div>
-      <p>Acá se gestiona el contenido de la despensa.</p>
+      <p>Agregá los ingredientes que tengas disponibles.</p>
       <div className="bg-gray-900 rounded-lg p-6 mt-4">
         <ul>
           {despensa.map((ingrediente, indice) => (

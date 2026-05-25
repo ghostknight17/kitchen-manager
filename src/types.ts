@@ -12,10 +12,7 @@ export type Receta = {
 
 export type DiaCalendario = {
   nombre: string;
-  desayuno: Receta | null;
-  almuerzo: Receta | null;
-  merienda: Receta | null;
-  cena: Receta | null;
+  menu: Receta[];
 };
 
 export type Seccion = "home" | "recetas" | "despensa" | "calendario";
