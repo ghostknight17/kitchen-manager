@@ -19,6 +19,7 @@ export default function Recetas({
   const [nombre, setNombre] = useState("");
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]);
   const [instrucciones, setInstrucciones] = useState("");
+  const [image, setImage] = useState("");
 
   const [inputNombre, setInputNombre] = useState("");
   const [inputCantidad, setInputCantidad] = useState("");
@@ -28,6 +29,7 @@ export default function Recetas({
     setNombre("");
     setIngredientes([]);
     setInstrucciones("");
+    setImage("");
     setIndiceEdicion(null);
     formularioVisible
       ? setFormularioVisible(false)
@@ -39,6 +41,7 @@ export default function Recetas({
     setNombre(receta.nombre);
     setIngredientes(receta.ingredientes);
     setInstrucciones(receta.instrucciones);
+    setImage(receta.image);
     setIndiceEdicion(indice);
     setFormularioVisible(true);
     setIngredientesVisible(true);
@@ -74,6 +77,7 @@ export default function Recetas({
       nombre: nombre.trim(),
       ingredientes: ingredientes,
       instrucciones: instrucciones,
+      image: image,
     };
 
     if (indiceEdicion !== null) {
@@ -89,6 +93,7 @@ export default function Recetas({
     setNombre("");
     setIngredientes([]);
     setInstrucciones("");
+    setImage("");
 
     setFormularioVisible(false);
   }
@@ -99,6 +104,23 @@ export default function Recetas({
 
   function eliminarIngrediente(indice: number) {
     setIngredientes(ingredientes.filter((_, i) => i !== indice));
+  }
+
+  async function addImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const formData = new FormData();
+    if (e.target.files !== null) {
+      formData.append("file", e.target.files[0]);
+      formData.append("upload_preset", "kitchen_manager");
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dxaaqm4ty/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+      const resultado = await response.json();
+      setImage(resultado.url);
+    }
   }
 
   if (recetaSeleccionada === null) {
@@ -127,11 +149,13 @@ export default function Recetas({
                   key={indice}
                 >
                   <div>
-                    <img
-                      src="https://picsum.photos/600/400"
-                      alt=""
-                      className="w-full h-48 object-cover mb-4 cursor-pointer"
-                    ></img>
+                    {receta.image && (
+                      <img
+                        src={receta.image}
+                        alt="Recipe image"
+                        className="w-full h-48 object-cover mb-4 cursor-pointer"
+                      ></img>
+                    )}
                     <h3
                       className="text-lg pb-2 cursor-pointer"
                       onClick={() => {
@@ -164,13 +188,24 @@ export default function Recetas({
           {formularioVisible && (
             <div className="flex flex-col gap-2 bg-gray-900 rounded-lg p-8 items-start">
               <label htmlFor="nombre">Nombre de la receta</label>
-              <input
-                type="text"
-                name="nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
-              />
+              <div>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="w-80 rounded-lg bg-gray-700 p-1 text-gray-300 focus:outline focus:outline-orange-400 pl-3"
+                />
+                <label className="bg-gray-800 hover:bg-gray-700 text-gray-300 py-2 px-4 rounded-lg h-10 ml-4 cursor-pointer">
+                  {image !== "" ? "Imagen agregada" : "Agregar Imagen"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => addImage(e)}
+                    className="hidden"
+                  />
+                </label>
+              </div>
               {ingredientesVisible && (
                 <div>
                   <ul>

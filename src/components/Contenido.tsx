@@ -37,6 +37,8 @@ export default function Contenido({
         recetas={recetas}
       />
     );
+  } else {
+    return null;
   }
   // } else {
   //   return <Home />;

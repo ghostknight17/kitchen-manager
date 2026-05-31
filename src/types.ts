@@ -8,6 +8,7 @@ export type Receta = {
   nombre: string;
   ingredientes: Ingrediente[];
   instrucciones: string;
+  image: string;
 };
 
 export type DiaCalendario = {

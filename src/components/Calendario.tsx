@@ -130,8 +130,8 @@ export default function Calendario({
                         onClick={() => asignarReceta(indice)}
                       >
                         <img
-                          src="https://picsum.photos/600/400"
-                          alt=""
+                          src={receta.image}
+                          alt="Recipe image"
                           className="w-full h-48 object-cover mb-4"
                         ></img>
                         <h3 className="text-lg pb-2">{receta.nombre}</h3>
